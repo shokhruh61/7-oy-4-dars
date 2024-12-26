@@ -1,40 +1,84 @@
 import React, { useState } from "react";
 
-function Copy() {
-  const [text, setText] = useState("");
-  function handleCopy() {
-    if (text) {
-      navigator.clipboard.writeText(text);
-      setText("");
+function ItemsCopy() {
+  const [items, setItems] = useState([]);
+  const [name, setName] = useState("");
+  const [namePaste, setNamePaste] = useState("");
+
+  const handleSave = (event) => {
+    event.preventDefault();
+
+    if (name.trim() === "") {
+      alert("malumot kiriting");
+      return;
     }
-  }
+
+    setItems((perviusName) => [...perviusName, name]);
+    setName("");
+  };
+
+  const handleCopy = (item) => {
+    sum.copy.writeText(item);
+  };
+
+  const handlePaste = (event) => {
+    event.preventDefault();
+
+    sum.copy
+      .readText()
+      .then((text) => {
+        setNamePaste(text);
+      })
+      .catch(() => {});
+  };
+
   return (
-    <div className="w-[600px] container mx-auto mt-3 bg-cyan-950 rounded-xl p-6 flex flex-col gap-5 shadow-2xl">
-      <div className="flex gap-3">
+    <div className="container mx-auto mt-10 p-5 max-w-md bg-blue-200 rounded-lg shadow-md">
+      <h1 className="text-center text-2xl font-bold mb-5">
+        biror soz kiriting
+      </h1>
+
+      <form onSubmit={handleSave} className="flex gap-3 mb-5">
         <input
           type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Enter text => copy"
-          className="focus:outline-none w-[500px] p-2 pl-3 rounded-md shadow-lg"
+          placeholder="copy qilmoqchi bolgan narsangiz nomi "
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
         />
         <button
-          onClick={handleCopy}
-          className="bg-green-500 rounded-full w-[45px] h-[45px] text-white font-bold"
+          type="submit"
+          className="px-4 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition"
         >
-          copy
+          qoshish
         </button>
+      </form>
+
+      <ul className="space-y-2">
+        {items.map((item, index) => (
+          <li
+            key={index}
+            onClick={() => handleCopy(item)}
+            className="px-4 py-2 bg-white rounded-md shadow hover:bg-gray-100 cursor-pointer"
+          >
+            {item}
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-5 bg-white p-4 rounded-lg shadow">
+        <h2 className="text-lg font-semibold mb-3">malumot joylashtirish</h2>
+        <input
+          type="text"
+          placeholder="Ctrl+v"
+          value={namePaste}
+          onPaste={handlePaste}
+          onChange={(e) => setNamePaste(e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+        />
       </div>
-      <h1 className="text-white font-serif font-medium">
-        Tepada kiritilgan malumotni saqlandimi yoki yoqmi sinash uchun input ↓
-      </h1>
-      <input
-        type="text"
-        placeholder="Bu yerga kiriting"
-        className="focus:outline-none p-2 pl-3 rounded-md shadow-lg"
-      />
     </div>
   );
 }
 
-export default Copy;
+export default ItemsCopy;
